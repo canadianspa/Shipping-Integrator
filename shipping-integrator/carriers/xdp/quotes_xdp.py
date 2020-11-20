@@ -1,14 +1,28 @@
-from classes.service import Service
-from .accounts import (
-    XDP_A,
-    XDP_B,
-    XDP_C,
-    XDP_A_KEY,
-    XDP_B_KEY,
-    XDP_C_KEY,
+from classes.quote import Quote, COLLECTION, DROPOFF
+from .data.services import (
+    PARCEL_OVERNIGHT,
+    PARCEL_ECONOMY,
+    PARCEL_12PM,
+    PARCEL_SAT12,
+    PARCEL_SAT10,
+    PARCEL_OVERNIGHT_CODE,
+    PARCEL_ECONOMY_CODE,
+    PARCEL_12PM_CODE,
+    PARCEL_SAT12_CODE,
+    PARCEL_SAT10_CODE,
 )
 
 
-def build_quotes_xdp():
+def build_xdp_quotes():
     return [
+        Quote(PARCEL_OVERNIGHT, PARCEL_OVERNIGHT_CODE, COLLECTION),
+        Quote(PARCEL_OVERNIGHT, PARCEL_OVERNIGHT_CODE, DROPOFF),
+        Quote(PARCEL_ECONOMY, PARCEL_ECONOMY_CODE, COLLECTION),
+        Quote(PARCEL_ECONOMY, PARCEL_ECONOMY_CODE, DROPOFF),
+        Quote(PARCEL_12PM, PARCEL_12PM_CODE, COLLECTION),
+        Quote(PARCEL_12PM, PARCEL_12PM_CODE, DROPOFF),
+        Quote(PARCEL_SAT12, PARCEL_SAT12_CODE, COLLECTION),
+        Quote(PARCEL_SAT12, PARCEL_SAT12_CODE, DROPOFF),
+        Quote(PARCEL_SAT10, PARCEL_SAT10_CODE, COLLECTION),
+        Quote(PARCEL_SAT10, PARCEL_SAT10_CODE, DROPOFF),
     ]

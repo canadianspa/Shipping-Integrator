@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify
 
 from common.credentials.tokens import VEEQO_REQUEST_TOKEN
-from middleware.auth import authenticate
 from common.utils import class_to_json
+from middleware.auth import authenticate
 
-
-from classes.service_factory import ServiceFactory
+from classes.quotes_factory import QuotesFactory
 
 app = Flask(__name__, static_folder='./', static_url_path='/')
 
@@ -14,7 +13,7 @@ app.wsgi_app = authenticate(app.wsgi_app, VEEQO_REQUEST_TOKEN)
 
 @app.route('/<carrier>/quotes',  methods=['POST'])
 def quotes(carrier):
-    quotes = ServiceFactory(carrier)
+    quotes = QuotesFactory(carrier)
     quotes_json = class_to_json(quotes)
 
     return jsonify(quotes_json)
