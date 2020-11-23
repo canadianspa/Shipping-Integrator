@@ -20,9 +20,7 @@ def delete_xdp_shipment(carrier, tracking_number):
         custom_root="xdpwebservice"
     )
 
-    url = XDP_API_URL
-
-    response = requests.post(url, data=xml)
+    response = requests.post(XDP_API_URL, data=xml)
     status = handle_response(response)
 
     if status == "OK":

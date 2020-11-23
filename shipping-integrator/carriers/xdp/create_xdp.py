@@ -9,20 +9,16 @@ from .shared import build_credentials, handle_response
 def create_xdp_shipment(carrier, shipment):
     account_no, access_key = build_credentials(carrier)
 
-    # REMOVE WHEN LIVE
-    shipment = test_shipment
     xml = build_xml(shipment, "create", account_no, access_key)
 
-    url = XDP_API_URL
-    create_resp = requests.post(url, data=xml)
-    status, consignment_no, label_url = handle_response(
-        create_resp, data=True)
+    create_resp = requests.post(XDP_API_URL, data=xml)
+    status, consign_no, label_url = handle_response(create_resp, data=True)
 
     if status == "OK":
         label_resp = requests.get(label_url)
         label_str = label_resp.content.encode("base64")
 
-        return ({"label": label_str, "tracking_number": consignment_no}, 201)
+        return ({"label": label_str, "tracking_number": consign_no}, 201)
     else:
         return ({"message": "Error creating consignment"}, 500)
 
@@ -88,29 +84,3 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
 def item_func(x):
     # Name of parent tag for a list item
     return 'piece'
-
-
-test_shipment = {
-    "destination_address":
-        {
-            "first_name": "TESTING",
-            "last_name": "IGNORE",
-            "company": "Trotters Independent Traders",
-            "city": "Peckham",
-            "country": "GB",
-            "state": "",
-            "zip": "SE15 2EB",
-            "phone": "07758989787",
-            "email": "sales@trotters.com",
-            "line_1": "80 Nelson Mandella House",
-            "line_2": "Nyrere Estate"
-        },
-    "parcels":
-        [
-            {
-                "dimensions": {"height": 15.0, "width": 22.0, "length": 10.0, "unit": "cm"},
-                "weight_in_grams": 20000
-            }
-        ],
-    "service_code": "O/N"
-}
