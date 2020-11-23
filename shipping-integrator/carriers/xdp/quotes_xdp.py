@@ -1,5 +1,5 @@
-from classes.quote import Quote, COLLECTION, DROPOFF
-from .data.services import (
+from common.utils import class_to_json
+from common.config import (
     PARCEL_OVERNIGHT,
     PARCEL_ECONOMY,
     PARCEL_12PM,
@@ -11,10 +11,14 @@ from .data.services import (
     PARCEL_SAT12_CODE,
     PARCEL_SAT10_CODE,
 )
+from classes.quote import Quote
+
+COLLECTION = "collection"
+DROPOFF = "dropoff"
 
 
 def build_xdp_quotes():
-    return [
+    quotes = [
         Quote(PARCEL_OVERNIGHT, PARCEL_OVERNIGHT_CODE, COLLECTION),
         Quote(PARCEL_OVERNIGHT, PARCEL_OVERNIGHT_CODE, DROPOFF),
         Quote(PARCEL_ECONOMY, PARCEL_ECONOMY_CODE, COLLECTION),
@@ -26,3 +30,5 @@ def build_xdp_quotes():
         Quote(PARCEL_SAT10, PARCEL_SAT10_CODE, COLLECTION),
         Quote(PARCEL_SAT10, PARCEL_SAT10_CODE, DROPOFF),
     ]
+
+    return class_to_json(quotes), 201

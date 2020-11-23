@@ -1,7 +1,3 @@
-COLLECTION = "collection"
-DROPOFF = "dropoff"
-
-
 class Quote():
     def __init__(self, name, code, service_type):
         self.name = name

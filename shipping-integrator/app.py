@@ -1,35 +1,38 @@
 from flask import Flask, request, jsonify
 
-from common.credentials.tokens import VEEQO_REQUEST_TOKEN
-from common.utils import class_to_json
 from middleware.auth import authenticate
+from common.credentials.tokens import VEEQO_REQUEST_TOKEN
+from strategies.quotes_shipment_strategy import quotes_shipment_strategy
+from strategies.create_shipment_strategy import create_shipment_strategy
+from strategies.delete_shipment_strategy import delete_shipment_strategy
 
-from classes.quotes_factory import QuotesFactory
-
-app = Flask(__name__, static_folder='./', static_url_path='/')
+app = Flask(__name__)
 
 app.wsgi_app = authenticate(app.wsgi_app, VEEQO_REQUEST_TOKEN)
 
 
-@app.route('/<carrier>/quotes',  methods=['POST'])
+@app.route('/<carrier>/quotes', methods=['POST'])
 def quotes(carrier):
-    quotes = QuotesFactory(carrier)
-    quotes_json = class_to_json(quotes)
+    quotes, code = quotes_shipment_strategy(carrier)
 
-    return jsonify(quotes_json)
+    return jsonify(quotes), code
 
 
-@app.route('/<carrier>/shipments',  methods=['POST'])
+@app.route('/<carrier>/shipments', methods=['POST'])
 def create_shipment(carrier):
-    print(carrier)
-    return jsonify([])
+    shipment = request.json
+
+    response, code = create_shipment_strategy(carrier, shipment)
+
+    return jsonify(response), code
 
 
-@app.route('/<carrier>/shipments/<tracking_number>',  methods=['DELETE'])
+@app.route('/<carrier>/shipments/<tracking_number>', methods=['DELETE'])
 def delete_shipment(carrier, tracking_number):
-    print(carrier, tracking_number)
-    return jsonify([])
+    response = delete_shipment_strategy(carrier, tracking_number)
+
+    return response
 
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True)
+    app.run(port=4000, debug=True, threaded=True)

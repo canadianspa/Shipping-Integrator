@@ -12,12 +12,10 @@ class authenticate():
 
     def __call__(self, environ, start_response):
         request = Request(environ)
-        _token = request.headers['Authentication']
 
-        if _token == self.token:
+        if request.headers['Authentication'] == self.token:
             return self.app(environ, start_response)
 
-        response = Response(u'Authorization failed',
-                            mimetype='text/plain', status=401)
+        response = Response(u'Authentication failed', status=401)
 
         return response(environ, start_response)
