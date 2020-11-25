@@ -1,6 +1,7 @@
 import re
 import dicttoxml
 import requests
+from base64 import b64encode
 
 from common.config import XDP_API_URL
 from .shared import build_credentials, handle_response
@@ -8,17 +9,21 @@ from .shared import build_credentials, handle_response
 
 def create_xdp_shipment(carrier, shipment):
     account_no, access_key = build_credentials(carrier)
+    print(shipment)
 
     xml = build_xml(shipment, "create", account_no, access_key)
+    print(xml)
 
-    create_resp = requests.post(XDP_API_URL, data=xml)
-    status, consign_no, label_url = handle_response(create_resp, data=True)
+    response = requests.post(XDP_API_URL, data=xml)
+    status, consign_no, label_url = handle_response(response, data=True)
 
     if status == "OK":
-        label_resp = requests.get(label_url)
-        label_str = label_resp.content.encode("base64")
+        response = requests.get(label_url)
 
-        return ({"label": label_str, "tracking_number": consign_no}, 201)
+        b64_bytes_str = b64encode(response.content)
+        b64_str = b64_bytes_str.decode("utf-8")
+
+        return ({"label": b64_str, "tracking_number": consign_no}, 201)
     else:
         return ({"message": "Error creating consignment"}, 500)
 
@@ -30,13 +35,17 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
     manifest_weight = 0
 
     for parcel in shipment["parcels"]:
-        manifest_weight += parcel["weight_in_grams"] / 1000
+        dimensions = parcel["dimensions"]
+        weight = parcel["weight_in_grams"] / 1000
 
         pieces.append({
-            "height": parcel["dimensions"]["height"],
-            "width": parcel["dimensions"]["width"],
-            "length": parcel["dimensions"]["length"],
+            "height": int(dimensions["height"]),
+            "width": int(dimensions["width"]),
+            "length": int(dimensions["length"]),
+            "weight": weight,
         })
+
+        manifest_weight += weight
 
     manifest_pieces = len(pieces)
 

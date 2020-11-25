@@ -1,34 +1,16 @@
 from common.utils import class_to_json
-from common.config import (
-    PARCEL_OVERNIGHT,
-    PARCEL_ECONOMY,
-    PARCEL_12PM,
-    PARCEL_SAT12,
-    PARCEL_SAT10,
-    PARCEL_OVERNIGHT_CODE,
-    PARCEL_ECONOMY_CODE,
-    PARCEL_12PM_CODE,
-    PARCEL_SAT12_CODE,
-    PARCEL_SAT10_CODE,
-)
 from classes.quote import Quote
 
-COLLECTION = "collection"
 DROPOFF = "dropoff"
 
 
 def build_xdp_quotes():
     quotes = [
-        Quote(PARCEL_OVERNIGHT, PARCEL_OVERNIGHT_CODE, COLLECTION),
-        Quote(PARCEL_OVERNIGHT, PARCEL_OVERNIGHT_CODE, DROPOFF),
-        Quote(PARCEL_ECONOMY, PARCEL_ECONOMY_CODE, COLLECTION),
-        Quote(PARCEL_ECONOMY, PARCEL_ECONOMY_CODE, DROPOFF),
-        Quote(PARCEL_12PM, PARCEL_12PM_CODE, COLLECTION),
-        Quote(PARCEL_12PM, PARCEL_12PM_CODE, DROPOFF),
-        Quote(PARCEL_SAT12, PARCEL_SAT12_CODE, COLLECTION),
-        Quote(PARCEL_SAT12, PARCEL_SAT12_CODE, DROPOFF),
-        Quote(PARCEL_SAT10, PARCEL_SAT10_CODE, COLLECTION),
-        Quote(PARCEL_SAT10, PARCEL_SAT10_CODE, DROPOFF),
+        Quote("Parcel - Overnight", "O/N", DROPOFF),
+        Quote("Parcel - Economy", "ECON", DROPOFF),
+        Quote("Parcel - 12pm", "1200", DROPOFF),
+        Quote("Parcel - Sat 12pm", "S12", DROPOFF),
+        Quote("Parcel - Sat 10.30am", "S10", DROPOFF),
     ]
 
     return class_to_json(quotes), 201
