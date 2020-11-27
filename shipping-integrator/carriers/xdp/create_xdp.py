@@ -9,7 +9,6 @@ from .shared import build_credentials, handle_response
 
 def create_xdp_shipment(carrier, shipment):
     account_no, access_key = build_credentials(carrier)
-    print(shipment)
 
     xml = build_xml(shipment, "create", account_no, access_key)
     print(xml)
@@ -36,16 +35,14 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
 
     for parcel in shipment["parcels"]:
         dimensions = parcel["dimensions"]
-        weight = parcel["weight_in_grams"] / 1000
 
         pieces.append({
             "height": int(dimensions["height"]),
             "width": int(dimensions["width"]),
             "length": int(dimensions["length"]),
-            "weight": weight,
         })
 
-        manifest_weight += weight
+        manifest_weight += int(parcel["weight_in_grams"] / 1000)
 
     manifest_pieces = len(pieces)
 
@@ -69,7 +66,7 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
             "manifestpieces": manifest_pieces,
             "manifestweight": manifest_weight,
             "label": "yes",
-            "dimensions": pieces,
+            "pieces": pieces,
         }
     }
 
