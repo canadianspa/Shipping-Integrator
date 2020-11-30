@@ -32,11 +32,13 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
     for parcel in shipment["parcels"]:
         manifest_weight += parcel["weight_in_grams"] / 1000
 
-        pieces.append({
-            "height": parcel["dimensions"]["height"],
-            "width": parcel["dimensions"]["width"],
-            "length": parcel["dimensions"]["length"],
-        })
+        pieces.append(
+            {
+                "height": parcel["dimensions"]["height"],
+                "width": parcel["dimensions"]["width"],
+                "length": parcel["dimensions"]["length"],
+            }
+        )
 
     manifest_pieces = len(pieces)
 
@@ -45,10 +47,10 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
         "consignment": {
             "accountno": account_no,
             "accesskey": access_key,
-            "references": {
-                "ref": "testing comment"
-            },
-            "deliverycontact": destination["first_name"] + " " + destination["last_name"],
+            "references": {"ref": "testing comment"},
+            "deliverycontact": destination["first_name"]
+            + " "
+            + destination["last_name"],
             "deliveryaddress1": destination["line_1"],
             "deliveryaddress2": destination["line_2"],
             "deliverytown": destination["city"],
@@ -60,8 +62,8 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
             "manifestpieces": manifest_pieces,
             "manifestweight": manifest_weight,
             "label": "yes",
-            "dimensions": pieces,
-        }
+            "pieces": pieces,
+        },
     }
 
     xml = dicttoxml.dicttoxml(
@@ -69,7 +71,7 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
         item_func=item_func,
         custom_root="xdpwebservice",
         attr_type=False,
-        cdata=True
+        cdata=True,
     )
 
     # Remove CDATA from <type> tag
@@ -83,4 +85,4 @@ def build_xml(shipment, shimpent_action, account_no, access_key):
 
 def item_func(x):
     # Name of parent tag for a list item
-    return 'piece'
+    return "piece"
