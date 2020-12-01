@@ -2,7 +2,7 @@ import requests
 import dicttoxml
 
 from common.config import XDP_API_URL
-from .shared import build_credentials, handle_response
+from .utils import build_credentials, handle_response
 
 
 def delete_xdp_shipment(carrier, tracking_number):
