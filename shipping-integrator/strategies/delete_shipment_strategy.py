@@ -1,4 +1,4 @@
-from carriers.xdp.delete_xdp import delete_xdp_shipment
+from carriers.xdp.carrier import delete_xdp_shipment
 
 
 def delete_shipment_strategy(carrier, tracking_number):

@@ -1,4 +1,4 @@
-from carriers.xdp.create_xdp import create_xdp_shipment
+from carriers.xdp.carrier import create_xdp_shipment
 
 
 def create_shipment_strategy(carrier, shipment):

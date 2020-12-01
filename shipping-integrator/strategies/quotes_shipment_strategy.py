@@ -1,4 +1,4 @@
-from carriers.xdp.quotes_xdp import build_xdp_quotes
+from carriers.xdp.carrier import build_xdp_quotes
 
 
 def quotes_shipment_strategy(carrier):
