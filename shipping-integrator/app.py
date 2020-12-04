@@ -14,9 +14,9 @@ app.wsgi_app = authenticate(app.wsgi_app, VEEQO_REQUEST_TOKEN)
 
 @app.route("/<carrier>/quotes", methods=["POST"])
 def quotes(carrier):
-    quotes, code = quotes_shipment_strategy(carrier)
+    response, code = quotes_shipment_strategy(carrier)
 
-    return jsonify(quotes), code
+    return jsonify(response), code
 
 
 @app.route("/<carrier>/shipments", methods=["POST"])

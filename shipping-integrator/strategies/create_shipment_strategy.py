@@ -1,8 +1,11 @@
-from carriers.xdp.create_xdp import create_xdp_shipment
+from carriers.xdp.carrier import create_xdp_shipment
+from carriers.dx.carrier import create_dx_shipment
 
 
 def create_shipment_strategy(carrier, shipment):
     if "xdp" in carrier:
         return create_xdp_shipment(carrier, shipment)
+    if carrier == "dx":
+        return create_dx_shipment(carrier, shipment)
     else:
         raise ValueError(carrier)

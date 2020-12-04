@@ -1,10 +1,10 @@
 from common.utils import class_to_json
 from classes.quote import Quote
 
-DROPOFF = "dropoff"
 
+def build_quotes():
+    DROPOFF = "dropoff"
 
-def build_xdp_quotes():
     quotes = [
         Quote("Parcel - Overnight", "O/N", DROPOFF),
         Quote("Parcel - Economy", "ECON", DROPOFF),
@@ -13,4 +13,4 @@ def build_xdp_quotes():
         Quote("Parcel - Sat 10.30am", "S10", DROPOFF),
     ]
 
-    return class_to_json(quotes), 201
+    return class_to_json(quotes)

@@ -1,3 +1,5 @@
+import xml.etree.ElementTree as ET
+
 from common.config import (
     XDP_A_NUMBER,
     XDP_B_NUMBER,
@@ -8,8 +10,6 @@ from common.credentials.keys import (
     XDP_B_KEY,
     XDP_C_KEY
 )
-
-import xml.etree.ElementTree as ET
 
 
 def build_credentials(carrier):
@@ -24,17 +24,21 @@ def build_credentials(carrier):
 
 
 def handle_response(response, data=False):
+    resp = Response()
+
     xml = ET.fromstring(response.content)
-    status = xml.find('.//valid').text
+    resp.status = xml.find('.//valid').text
 
-    if data:
-        consignment_no = None
-        label_url = None
+    if data and resp.status == "OK":
+        resp.consignment_no = xml.find('.//consignmentno').text
+        resp.label_url = xml.find('.//label').text
 
-        if status == "OK":
-            consignment_no = xml.find('.//consignmentno').text
-            label_url = xml.find('.//label').text
-
-        return status, consignment_no, label_url
+        return resp
     else:
-        return status
+        return resp
+
+
+class Response():
+    status = None
+    consignment_no = None
+    label_url = None
