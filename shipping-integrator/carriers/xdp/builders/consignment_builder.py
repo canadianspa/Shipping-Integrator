@@ -2,12 +2,7 @@ from common.utils import json_to_xml
 
 
 def build_consignment_xml(shipment, shimpent_type, account_no, access_key):
-    json = build_consignment_json(
-        shipment,
-        shimpent_type,
-        account_no,
-        access_key
-    )
+    json = build_consignment_json(shipment, shimpent_type, account_no, access_key)
 
     xml = json_to_xml(json, custom_root="xdpwebservice", cdata=True)
 
@@ -30,10 +25,10 @@ def build_consignment_json(shipment, shimpent_type, account_no, access_key):
         "consignment": {
             "accountno": account_no,
             "accesskey": access_key,
-            "references": {
-                "ref": shipment["reference"]
-            },
-            "deliverycontact": destination["first_name"] + " " + destination["last_name"],
+            "references": {"ref": shipment["reference"]},
+            "deliverycontact": destination["first_name"]
+            + " "
+            + destination["last_name"],
             "deliveryaddress1": destination["line_1"],
             "deliveryaddress2": destination["line_2"],
             "deliverytown": destination["city"],
@@ -46,7 +41,7 @@ def build_consignment_json(shipment, shimpent_type, account_no, access_key):
             "manifestpieces": len(pieces),
             "label": "yes",
             "pieces": pieces,
-        }
+        },
     }
 
     return json
@@ -57,11 +52,13 @@ def build_pieces_json(parcels):
     weight = 0
 
     for parcel in parcels:
-        pieces.append({
-            "height": parcel["dimensions"]["height"],
-            "width": parcel["dimensions"]["width"],
-            "length": parcel["dimensions"]["length"],
-        })
+        pieces.append(
+            {
+                "height": parcel["dimensions"]["height"],
+                "width": parcel["dimensions"]["width"],
+                "length": parcel["dimensions"]["length"],
+            }
+        )
 
         weight += int(parcel["weight_in_grams"] / 1000)
 

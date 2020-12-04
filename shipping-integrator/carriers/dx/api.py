@@ -1,46 +1,13 @@
-import requests
-import json
-from base64 import b64encode
-
-from common.credentials.logins import (
-    DX_ACCOUNT_NUMBER,
-    DX_ACCOUNT_PASSWORD,
-    DX_ORIG_SERVICE_CENTRE
-)
 from common.config import DX_API_URL
-from .utils import handle_response
+from .session import DxSession
 
-headers = {
-    "Content-Type": "application/json",
-    "encoding": "utf-8",
-    "Accept": "application/json"
-}
-
-
-def get_session_key():
-    url = f"{DX_API_URL}/GetSessionKey"
-
-    body = {
-        "DXAccountNumber": DX_ACCOUNT_NUMBER,
-        "OrigServiceCentre": DX_ORIG_SERVICE_CENTRE,
-        "Password": DX_ACCOUNT_PASSWORD
-    }
-
-    data = json.dumps(body)
-
-    res = requests.post(url, data=data, headers=headers)
-    response = handle_response(res)
-
-    return response["SessionKey"]
+session = DxSession()
 
 
 def create_consignment(body):
     url = f"{DX_API_URL}/AddConsignment"
 
-    data = json.dumps(body)
-
-    res = requests.post(url, data=data, headers=headers)
-    response = handle_response(res)
+    response = session.handle_request(url, body)
 
     return response
 
@@ -50,12 +17,25 @@ def delete_consignment(tracking_number):
 
     body = {
         "ConsignmentNumber": tracking_number,
-        "RoutingStream": "F"
+        "RoutingStream": "F",
     }
 
-    data = json.dumps(body)
-
-    res = requests.post(url, data=data, headers=headers)
-    response = handle_response(res)
+    response = session.handle_request(url, body)
 
     return response
+
+
+def get_labels(consignment_number):
+    url = f"{DX_API_URL}/GetLabels"
+
+    body = {
+        "ConsignmentNumber": consignment_number,
+        "LabelReturnType": 0,
+        "PDFLabelConfig": {"labelSetup": 1, "startingPosition": 1},
+        "PrintSelection": 0,
+        "RoutingStream": "F",
+    }
+
+    response = session.handle_request(url, body)
+
+    return response["label"]

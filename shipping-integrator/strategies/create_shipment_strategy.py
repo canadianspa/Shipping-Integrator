@@ -6,6 +6,6 @@ def create_shipment_strategy(carrier, shipment):
     if "xdp" in carrier:
         return create_xdp_shipment(carrier, shipment)
     if carrier == "dx":
-        return create_dx_shipment(carrier, shipment)
+        return create_dx_shipment(shipment)
     else:
         raise ValueError(carrier)
