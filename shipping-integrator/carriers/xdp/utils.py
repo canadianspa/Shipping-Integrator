@@ -1,4 +1,3 @@
-from base64 import b64encode
 import xml.etree.ElementTree as ET
 
 from common.config import (
@@ -24,14 +23,8 @@ def build_credentials(carrier):
         raise ValueError(carrier)
 
 
-class Resp():
-    status = None
-    consignment_no = None
-    label_url = None
-
-
 def handle_response(response, data=False):
-    resp = Resp()
+    resp = Response()
 
     xml = ET.fromstring(response.content)
     resp.status = xml.find('.//valid').text
@@ -45,8 +38,7 @@ def handle_response(response, data=False):
         return resp
 
 
-def endcode_pdf_string(string):
-    b64_bytes_str = b64encode(string)
-    b64_str = b64_bytes_str.decode("utf-8")
-
-    return b64_str
+class Response():
+    status = None
+    consignment_no = None
+    label_url = None
