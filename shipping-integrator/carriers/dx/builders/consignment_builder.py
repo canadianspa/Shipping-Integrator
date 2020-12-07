@@ -1,5 +1,6 @@
-from common.credentials.logins import DX_ACCOUNT_NUMBER, DX_ORIG_SERVICE_CENTRE
 import time
+
+from common.credentials.logins import DX_ACCOUNT_NUMBER, DX_ORIG_SERVICE_CENTRE
 
 
 def consignment_builder(shipment):
@@ -12,7 +13,8 @@ def consignment_builder(shipment):
         "ManifestDate": f"/Date({manifest_date}+0000)/",
         "ConsignmentReference1": shipment["reference"][1:],
         "OrigServiceCentre": DX_ORIG_SERVICE_CENTRE,
-        "ServiceCode": shipment["service_code"],
+        "ServiceCode": shipment["service_code"]["code"],
+        "SpecialInstruction1": "Signature required",
         "DeliveryName": destination["first_name"] + " " + destination["last_name"],
         "DeliveryAddress1": destination["line_1"],
         "DeliveryAddress2": destination["line_2"],
@@ -43,16 +45,3 @@ def build_contents(parcels):
         )
 
     return contents
-
-
-# ask Kerry about correct type
-# 1 = CartonKG
-# 2 = Kilos
-# 3 = Length
-# 4 = LengthGreaterThan3Metres
-# 5 = IDW
-# 6 = Pallet
-# 7 = Nightpak
-# 8 = Docpak
-# 9 = CartonCA
-# 10 = Eurobag

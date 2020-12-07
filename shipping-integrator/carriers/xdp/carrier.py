@@ -9,10 +9,10 @@ from .builders.consignment_builder import build_consignment_xml
 from .builders.delete_consignment_builder import build_delete_consignment_xml
 
 
-def build_xdp_quotes():
-    quotes = build_quotes()
+def build_xdp_quotes(carrier):
+    quotes = build_quotes(carrier)
 
-    return quotes, 201
+    return quotes
 
 
 def create_xdp_shipment(carrier, shipment):
@@ -30,7 +30,7 @@ def create_xdp_shipment(carrier, shipment):
     if response.status == "OK":
         label = get_label(response.label_url)
 
-        return ({"label": label, "tracking_number": response.consignment_no}, 201)
+        return ({"label": label, "tracking_number": f"{carrier}: {response.consignment_no}"}, 201)
     else:
         return ({"message": "Error creating consignment"}, 500)
 

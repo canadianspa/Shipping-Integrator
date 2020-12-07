@@ -1,16 +1,36 @@
-from common.utils import class_to_json
-from classes.quote import Quote
+import json
 
 
-def build_quotes():
-    DROPOFF = "dropoff"
-
+def build_quotes(carrier):
     quotes = [
-        Quote("Parcel - Overnight", "O/N", DROPOFF),
-        Quote("Parcel - Economy", "ECON", DROPOFF),
-        Quote("Parcel - 12pm", "1200", DROPOFF),
-        Quote("Parcel - Sat 12pm", "S12", DROPOFF),
-        Quote("Parcel - Sat 10.30am", "S10", DROPOFF),
+        build_quote(carrier, "O/N", "Overnight"),
+        build_quote(carrier, "ECON", "Economy"),
+        build_quote(carrier, "1200", "12pm"),
+        build_quote(carrier, "S12", "Sat 12pm"),
+        build_quote(carrier, "S10", "Sat 10:30am"),
     ]
 
-    return class_to_json(quotes)
+    return quotes
+
+
+def build_quote(carrier, service_code, service_name):
+    title = ""
+    if carrier == "xdpa":
+        title = "XDP A"
+    if carrier == "xdpb":
+        title = "XDP B"
+    if carrier == "xdpc":
+        title = "XDP C"
+
+    code = {
+        "carrier": carrier,
+        "code": service_code,
+    }
+
+    quote = {
+        "code": json.dumps(code),
+        "name": f"{title} - Parcel {service_name}",
+        "service_type": "dropoff"
+    }
+
+    return quote

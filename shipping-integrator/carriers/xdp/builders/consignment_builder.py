@@ -2,7 +2,8 @@ from common.utils import json_to_xml
 
 
 def build_consignment_xml(shipment, shimpent_type, account_no, access_key):
-    json = build_consignment_json(shipment, shimpent_type, account_no, access_key)
+    json = build_consignment_json(
+        shipment, shimpent_type, account_no, access_key)
 
     xml = json_to_xml(json, custom_root="xdpwebservice", cdata=True)
 
@@ -36,7 +37,8 @@ def build_consignment_json(shipment, shimpent_type, account_no, access_key):
             "deliverypostcode": destination["zip"],
             "deliveryphone": destination["phone"],
             "deliveryemail": destination["email"],
-            "servicelevel": shipment["service_code"],
+            "deliverynotes": "Signature required",
+            "servicelevel": shipment["service_code"]["code"],
             "manifestweight": manifest_weight,
             "manifestpieces": len(pieces),
             "label": "yes",

@@ -7,10 +7,10 @@ from .api import (
 )
 
 
-def build_dx_quotes():
-    quotes = build_quotes()
+def build_dx_quotes(carrier):
+    quotes = build_quotes(carrier)
 
-    return quotes, 201
+    return quotes
 
 
 def create_dx_shipment(shipment):
@@ -23,7 +23,7 @@ def create_dx_shipment(shipment):
 
         label = get_labels(consignment_number)
 
-        return ({"label": label, "tracking_number": consignment_number}, 201)
+        return ({"label": label, "tracking_number": f"dx: {consignment_number}"}, 201)
     else:
         return ({"message": response["StatusMessage"]}, 500)
 

@@ -1,17 +1,35 @@
-from common.utils import class_to_json
-from classes.quote import Quote
+import json
 
 
-def build_quotes():
-    DROPOFF = "dropoff"
-
+def build_quotes(carrier):
     quotes = [
-        Quote("1man - Overnight", "ON", DROPOFF),
-        Quote("1man - Overnight 9:30", "930", DROPOFF),
-        Quote("1man - Overnight pre-noon", "AM", DROPOFF),
-        Quote("1man - 3Day", "3D", DROPOFF),
-        Quote("1man - Saturday", "SAT", DROPOFF),
-        Quote("1man - Saturday 9:30", "S93", DROPOFF),
+        build_quote(carrier, "1man", "ON", "Overnight"),
+        build_quote(carrier, "1man", "930", "Overnight 9:30"),
+        build_quote(carrier, "1man", "AM", "Overnight pre-noon"),
+        build_quote(carrier, "1man", "3Day", "3Day"),
+        build_quote(carrier, "1man", "SAT", "Saturday"),
+        build_quote(carrier, "1man", "S93", "Saturday 9:30"),
+        build_quote(carrier, "2man", "H2", "Standard"),
+        build_quote(carrier, "2man", "H1", "Overnight"),
+        build_quote(carrier, "2man", "HS", "Saturday"),
+        build_quote(carrier, "2man", "C1", "Collection Overnight"),
+        build_quote(carrier, "2man", "C2", "Collection Standard"),
+        build_quote(carrier, "2man", "CS", "Collection Saturday"),
     ]
 
-    return class_to_json(quotes)
+    return quotes
+
+
+def build_quote(carrier, prefix, service_code, service_name):
+    code = {
+        "carrier": carrier,
+        "code": service_code,
+    }
+
+    quote = {
+        "code": json.dumps(code),
+        "name": f"DX {prefix} - {service_name}",
+        "service_type": "dropoff"
+    }
+
+    return quote
