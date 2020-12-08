@@ -31,8 +31,8 @@ def get_labels(consignment_number):
     body = {
         "ConsignmentNumber": consignment_number,
         "LabelReturnType": 0,
-        "PDFLabelConfig": {"labelSetup": 1, "startingPosition": 1},
-        "PrintSelection": 0,
+        "PDFLabelConfig": {"labelSetup": 2, "startingPosition": 1},
+        "PrintSelection": 2,
         "RoutingStream": "F",
     }
 
