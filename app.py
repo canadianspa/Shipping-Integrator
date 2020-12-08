@@ -48,9 +48,9 @@ def track_shipment():
 
     carrier = get_carrier(tracking_number)
 
-    url, code = track_shipment_strategy(carrier, tracking_number)
+    url = track_shipment_strategy(carrier, tracking_number)
 
-    return redirect(url, code=code)
+    return redirect(url, code=302)
 
 
 if __name__ == "__main__":

@@ -46,4 +46,4 @@ def delete_xdp_shipment(tracking_number):
 def redirect_xdp_tracking(tracking_number):
     url = f"{XDP_TRACKING_URL}?c={tracking_number}"
 
-    return url, 302
+    return url

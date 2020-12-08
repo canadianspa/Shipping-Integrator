@@ -41,4 +41,4 @@ def delete_dx_shipment(consignment_number):
 def redirect_dx_tracking(tracking_number):
     url = DX_TRACKING_URL
 
-    return url, 302
+    return url
