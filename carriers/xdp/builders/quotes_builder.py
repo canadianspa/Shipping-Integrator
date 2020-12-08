@@ -1,36 +1,23 @@
-import json
+from builders.quote import build_quote
 
 
-def build_quotes(carrier):
-    quotes = [
-        build_quote(carrier, "O/N", "Overnight"),
-        build_quote(carrier, "ECON", "Economy"),
-        build_quote(carrier, "1200", "12pm"),
-        build_quote(carrier, "S12", "Sat 12pm"),
-        build_quote(carrier, "S10", "Sat 10:30am"),
-    ]
+def build_quotes():
+    quotes = (
+        build_quotes_wrapper("xdpa", "XDP A")
+        + build_quotes_wrapper("xdpb", "XDP B")
+        + build_quotes_wrapper("xdpc", "XDP C")
+    )
 
     return quotes
 
 
-def build_quote(carrier, service_code, service_name):
-    title = ""
-    if carrier == "xdpa":
-        title = "XDP A"
-    if carrier == "xdpb":
-        title = "XDP B"
-    if carrier == "xdpc":
-        title = "XDP C"
+def build_quotes_wrapper(carrier, title):
+    quotes = [
+        build_quote(carrier, "O/N", f"{title} - Overnight"),
+        build_quote(carrier, "ECON", f"{title} - Economy"),
+        build_quote(carrier, "1200", f"{title} - 12pm"),
+        build_quote(carrier, "S12", f"{title} - Sat 12pm"),
+        build_quote(carrier, "S10", f"{title} - Sat 10:30am"),
+    ]
 
-    code = {
-        "carrier": carrier,
-        "code": service_code,
-    }
-
-    quote = {
-        "code": json.dumps(code),
-        "name": f"{title} - Parcel {service_name}",
-        "service_type": "dropoff"
-    }
-
-    return quote
+    return quotes

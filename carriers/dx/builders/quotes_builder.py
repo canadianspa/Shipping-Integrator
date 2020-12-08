@@ -1,35 +1,17 @@
-import json
+from builders.quote import build_quote
 
 
-def build_quotes(carrier):
+def build_quotes():
     quotes = [
-        build_quote(carrier, "1man", "ON", "Overnight"),
-        build_quote(carrier, "1man", "930", "Overnight 9:30"),
-        build_quote(carrier, "1man", "AM", "Overnight pre-noon"),
-        build_quote(carrier, "1man", "3Day", "3Day"),
-        build_quote(carrier, "1man", "SAT", "Saturday"),
-        build_quote(carrier, "1man", "S93", "Saturday 9:30"),
-        build_quote(carrier, "2man", "H2", "Standard"),
-        build_quote(carrier, "2man", "H1", "Overnight"),
-        build_quote(carrier, "2man", "HS", "Saturday"),
-        build_quote(carrier, "2man", "C1", "Collection Overnight"),
-        build_quote(carrier, "2man", "C2", "Collection Standard"),
-        build_quote(carrier, "2man", "CS", "Collection Saturday"),
+        build_quote("dx", "ON", "DX 1man - Overnight"),
+        build_quote("dx", "930", "DX 1man - Overnight 9:30"),
+        build_quote("dx", "AM", "DX 1man - Overnight pre-noon"),
+        build_quote("dx", "3Day", "DX 1man - 3Day"),
+        build_quote("dx", "SAT", "DX 1man - Saturday"),
+        build_quote("dx", "S93", "DX 1man - Saturday 9:30"),
+        build_quote("dx", "H2", "DX 2man - Standard"),
+        build_quote("dx", "H1", "DX 2man - Overnight"),
+        build_quote("dx", "HS", "DX 2man - Saturday"),
     ]
 
     return quotes
-
-
-def build_quote(carrier, prefix, service_code, service_name):
-    code = {
-        "carrier": carrier,
-        "code": service_code,
-    }
-
-    quote = {
-        "code": json.dumps(code),
-        "name": f"DX {prefix} - {service_name}",
-        "service_type": "dropoff"
-    }
-
-    return quote
