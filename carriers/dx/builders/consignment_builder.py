@@ -5,6 +5,7 @@ from common.credentials.logins import DX_ACCOUNT_NUMBER, DX_ORIG_SERVICE_CENTRE
 
 def consignment_builder(shipment):
     manifest_date = int(round(time.time() * 1000))
+    
     destination = shipment["destination_address"]
     contents = build_contents(shipment["parcels"])
 

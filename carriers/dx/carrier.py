@@ -1,4 +1,5 @@
 from common.config import DX_TRACKING_URL
+
 from .builders.quotes_builder import build_quotes
 from .builders.consignment_builder import consignment_builder
 from .api import (

@@ -3,7 +3,11 @@ from common.utils import json_to_xml
 
 def build_consignment_xml(shipment, shimpent_type, account_no, access_key):
     json = build_consignment_json(
-        shipment, shimpent_type, account_no, access_key)
+        shipment,
+        shimpent_type,
+        account_no,
+        access_key
+    )
 
     xml = json_to_xml(json, custom_root="xdpwebservice", cdata=True)
 

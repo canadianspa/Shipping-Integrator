@@ -3,8 +3,8 @@ import json
 
 from middleware.auth import authenticate
 from common.credentials.tokens import VEEQO_REQUEST_TOKEN
-from common.utils import handle_shipment, get_carrier
 
+from carriers.utils import handle_shipment, get_carrier
 from builders.quotes import build_quotes
 from strategies.create_shipment_strategy import create_shipment_strategy
 from strategies.delete_shipment_strategy import delete_shipment_strategy

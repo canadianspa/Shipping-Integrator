@@ -21,9 +21,11 @@ def create_xdp_shipment(carrier, shipment):
 
     response = create_consignment(xml)
 
-    if response.status == "OK":
-        label = get_label(response.label_url)
-        consignment_no = response.consignment_no
+    if response["status"] == "OK":
+        label_url = response["label_url"]
+        label = get_label(label_url)
+
+        consignment_no = response["consignment_no"]
 
         return ({"label": label, "tracking_number": consignment_no}, 201)
     else:
@@ -37,7 +39,7 @@ def delete_xdp_shipment(tracking_number):
 
     response = delete_consignment(xml)
 
-    if response.status == "OK":
+    if response["status"] == "OK":
         return ("", 204)
     else:
         return ("Error deleting consignment", 500)
