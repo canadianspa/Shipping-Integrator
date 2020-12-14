@@ -1,11 +1,3 @@
-#Apache Route
+# Flask backend to enable adition of XDP and DX 2man services to Veeqo
 
-Listen 80
-
-<VirtualHost \*:80>
-ServerName localhost
-WSGIScriptAlias / M:\Shipping-Integrator\app.wsgi
-<Directory M:\Shipping-Integrator>
-Require all granted
-</Directory>
-</VirtualHost>
+Build under the schema found at [Shipping API Documentation][https://developer.veeqo.com/docs/shipping#/introduction/carrier-setup].
