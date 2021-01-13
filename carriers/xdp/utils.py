@@ -1,11 +1,13 @@
 import xml.etree.ElementTree as ET
 
-from common.config import (
+from common.credentials.keys import (
     XDP_A_NUMBER,
     XDP_B_NUMBER,
     XDP_C_NUMBER,
+    XDP_A_KEY,
+    XDP_B_KEY,
+    XDP_C_KEY,
 )
-from common.credentials.keys import XDP_A_KEY, XDP_B_KEY, XDP_C_KEY
 
 
 def build_credentials(carrier):
