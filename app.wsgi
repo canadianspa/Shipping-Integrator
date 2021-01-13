@@ -1,4 +1,6 @@
 import sys
-sys.path.insert(1, 'M:/Shipping-Integrator/shipping-integrator')
+
+path = "M:\Current\Shipping-Integrator"
+sys.path.insert(1, path)
 
 from app import app as application

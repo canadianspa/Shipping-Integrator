@@ -20,21 +20,15 @@ def build_credentials(carrier):
 
 
 def handle_response(response, data=False):
-    resp = Response()
+    resp = {}
 
     xml = ET.fromstring(response.content)
-    resp.status = xml.find(".//valid").text
+    resp["status"] = xml.find(".//valid").text
 
-    if data and resp.status == "OK":
-        resp.consignment_no = xml.find(".//consignmentno").text
-        resp.label_url = xml.find(".//label").text
+    if data and resp["status"] == "OK":
+        resp["consignment_no"] = xml.find(".//consignmentno").text
+        resp["label_url"] = xml.find(".//label").text
 
         return resp
     else:
         return resp
-
-
-class Response:
-    status = None
-    consignment_no = None
-    label_url = None
