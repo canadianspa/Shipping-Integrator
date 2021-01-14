@@ -17,6 +17,7 @@ def build_dx_quotes():
 
 def create_dx_shipment(shipment):
     consignment = consignment_builder(shipment)
+    print(consignment)
 
     response = create_consignment(consignment)
 

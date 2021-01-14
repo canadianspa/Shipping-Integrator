@@ -7,7 +7,7 @@ session = DxSession()
 def create_consignment(body):
     url = f"{DX_API_URL}/AddConsignment"
 
-    response = session.handle_request(url, body)
+    response = session.request(url, body)
 
     return response
 
@@ -20,7 +20,7 @@ def delete_consignment(tracking_number):
         "RoutingStream": "F",
     }
 
-    response = session.handle_request(url, body)
+    response = session.request(url, body)
 
     return response
 
@@ -36,6 +36,6 @@ def get_labels(consignment_number):
         "RoutingStream": "F",
     }
 
-    response = session.handle_request(url, body)
+    response = session.request(url, body)
 
     return response["label"]
