@@ -1,5 +1,6 @@
 from common.config import DX_TRACKING_URL
 
+from .session import DxSession
 from .builders.quotes_builder import build_quotes
 from .builders.consignment_builder import consignment_builder
 from .api import (
@@ -7,6 +8,8 @@ from .api import (
     delete_consignment,
     get_labels,
 )
+
+session = DxSession()
 
 
 def build_dx_quotes():
@@ -17,14 +20,13 @@ def build_dx_quotes():
 
 def create_dx_shipment(shipment):
     consignment = consignment_builder(shipment)
-    print(consignment)
 
-    response = create_consignment(consignment)
+    response = create_consignment(session, consignment)
 
     if response["Status"] == 0:
         consignment_number = response["ConsignmentNumber"]
 
-        label = get_labels(consignment_number)
+        label = get_labels(session, consignment_number)
 
         return ({"label": label, "tracking_number": consignment_number}, 201)
     else:
@@ -32,7 +34,7 @@ def create_dx_shipment(shipment):
 
 
 def delete_dx_shipment(consignment_number):
-    response = delete_consignment(consignment_number)
+    response = delete_consignment(session, consignment_number)
 
     if response["Status"] == 0:
         return ("", 204)

@@ -1,10 +1,7 @@
 from common.config import DX_API_URL
-from .session import DxSession
-
-session = DxSession()
 
 
-def create_consignment(body):
+def create_consignment(session, body):
     url = f"{DX_API_URL}/AddConsignment"
 
     response = session.request(url, body)
@@ -12,7 +9,7 @@ def create_consignment(body):
     return response
 
 
-def delete_consignment(tracking_number):
+def delete_consignment(session, tracking_number):
     url = f"{DX_API_URL}/DeleteConsignment"
 
     body = {
@@ -25,7 +22,7 @@ def delete_consignment(tracking_number):
     return response
 
 
-def get_labels(consignment_number):
+def get_labels(session, consignment_number):
     url = f"{DX_API_URL}/GetLabels"
 
     body = {
