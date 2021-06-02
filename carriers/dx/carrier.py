@@ -1,48 +1,134 @@
-from common.config import DX_TRACKING_URL
+from flask import redirect, jsonify
+import time
 
-from .session import DxSession
-from .builders.quotes_builder import build_quotes
-from .builders.consignment_builder import consignment_builder
-from .api import (
-    create_consignment,
-    delete_consignment,
-    get_labels,
+from ..utils import build_quote
+from common.credentials import (
+    DX_ACCOUNT_NUMBER_LIVE,
+    DX_ACCOUNT_PASSWORD_LIVE,
+    DX_ORIG_SERVICE_CENTRE_LIVE,
+    DX_ACCOUNT_NUMBER_TEST,
+    DX_ACCOUNT_PASSWORD_TEST,
+    DX_ORIG_SERVICE_CENTRE_TEST,
 )
 
-session = DxSession()
+from .session import DxSession
 
 
-def build_dx_quotes():
-    quotes = build_quotes()
+class DX:
+    def __init__(self, testing):
+        self.ENV = "TEST" if testing else "LIVE"
 
-    return quotes
+        if testing:
+            self.account_number = DX_ACCOUNT_NUMBER_TEST
+            self.account_password = DX_ACCOUNT_PASSWORD_TEST
+            self.service_center = DX_ORIG_SERVICE_CENTRE_TEST
+            self.url = "http://itd.dx-track.com/DespatchManager.API.Service.DM6Lite_Test/DM6LiteService.svc"
+        else:
+            self.account_number = DX_ACCOUNT_NUMBER_LIVE
+            self.account_password = DX_ACCOUNT_PASSWORD_LIVE
+            self.service_center = DX_ORIG_SERVICE_CENTRE_LIVE
+            self.url = "https://dx-track.com/DespatchManager.API.Service.DM6Lite/DM6LiteService.svc"
 
+        self.tracking_url = "https://www.dxdelivery.com/consumer/my-tracking/"
 
-def create_dx_shipment(shipment):
-    consignment = consignment_builder(shipment)
+        self.session = DxSession(
+            self.ENV,
+            self.url,
+            self.account_number,
+            self.account_password,
+            self.service_center,
+        )
 
-    response = create_consignment(session, consignment)
+        print(self.ENV + ": DX initialised")
 
-    if response["Status"] == 0:
-        consignment_number = response["ConsignmentNumber"]
+    def quotes(self):
+        return [
+            build_quote("dx", "H2", "DX 2man - Standard"),
+            build_quote("dx", "H1", "DX 2man - Overnight"),
+            build_quote("dx", "HS", "DX 2man - Saturday"),
+        ]
 
-        label = get_labels(session, consignment_number)
+    def create(self, service_code, shipment):
+        manifest_date = int(round(time.time() * 1000))
 
-        return ({"label": label, "tracking_number": consignment_number}, 201)
-    else:
-        return ({"message": response["StatusMessage"]}, 500)
+        body = {
+            "DXAccountNumber": self.account_number,
+            "ManifestDate": f"/Date({manifest_date}+0000)/",
+            "ConsignmentReference1": shipment["reference"].replace("#", ""),
+            "OrigServiceCentre": self.service_center,
+            "ServiceCode": service_code,
+            "SpecialInstruction1": "Signature required",
+            "DeliveryName": f'{shipment["destination_address"]["first_name"]} {shipment["destination_address"]["last_name"]}',
+            "DeliveryAddress1": shipment["destination_address"]["line_1"],
+            "DeliveryAddress2": shipment["destination_address"]["line_2"],
+            "DeliveryPostcode": shipment["destination_address"]["zip"],
+            "DeliveryContact": f'{shipment["destination_address"]["first_name"]} {shipment["destination_address"]["last_name"]}',
+            "DeliveryPhoneNumber": shipment["destination_address"]["phone"],
+            "DeliveryEmail": shipment["destination_address"]["email"],
+            "Contents": [
+                {
+                    "ContentDescriptionID": 6,
+                    "ContentDescription": "Pallet",
+                    "ContentDimension1": int(parcel["dimensions"]["height"]),
+                    "ContentDimension2": int(parcel["dimensions"]["width"]),
+                    "ContentDimension3": int(parcel["dimensions"]["length"]),
+                    "ContentQuantity": 1,
+                    "ContentTotalWeight": int(parcel["weight_in_grams"] / 1000),
+                }
+                for parcel in shipment["parcels"]
+            ],
+        }
 
+        url = self.url + "/AddConsignment"
 
-def delete_dx_shipment(consignment_number):
-    response = delete_consignment(session, consignment_number)
+        response = self.session.request(url, body)
 
-    if response["Status"] == 0:
-        return ("", 204)
-    else:
-        return ({"message": response["StatusMessage"]}, 500)
+        if response["Status"] == 0:
+            consignmentno = response["ConsignmentNumber"]
 
+            response = {
+                "label": self.get_label(consignmentno),
+                "tracking_number": consignmentno,
+            }
 
-def redirect_dx_tracking(tracking_number):
-    url = DX_TRACKING_URL
+            return jsonify(response), 201
+        else:
+            return "Consignment not created", 500
 
-    return url
+    def delete(self, consignmentno):
+        url = self.url + "/DeleteConsignment"
+
+        body = {
+            "ConsignmentNumber": consignmentno,
+            "RoutingStream": "F",
+        }
+
+        response = self.session.request(url, body)
+
+        if response["Status"] == 0:
+            return "Consignment deleted", 204
+        else:
+            return "Consignment not deleted", 500
+
+    def track(self, consignmentno):
+        url = self.tracking_url
+
+        return redirect(url, code=302)
+
+    def get_label(self, consignmentno):
+        url = self.url + "/GetLabels"
+
+        body = {
+            "ConsignmentNumber": consignmentno,
+            "LabelReturnType": 0,
+            "PDFLabelConfig": {
+                "labelSetup": 2,
+                "startingPosition": 1,
+            },
+            "PrintSelection": 2,
+            "RoutingStream": "F",
+        }
+
+        response = self.session.request(url, body)
+
+        return response["label"]

@@ -1,57 +1,83 @@
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, jsonify
 import json
 
 from middleware.auth import authenticate
-from common.credentials.tokens import VEEQO_REQUEST_TOKEN
+from common.credentials import VEEQO_REQUEST_TOKEN
 
-from carriers.utils import handle_shipment, get_carrier
-from builders.quotes import build_quotes
-from strategies.create_shipment_strategy import create_shipment_strategy
-from strategies.delete_shipment_strategy import delete_shipment_strategy
-from strategies.track_shipment_strategy import track_shipment_strategy
+from carriers.xdp.carrier import XDP
+from carriers.dx.carrier import DX
+from carriers.panther.carrier import Panther
+from carriers.utils import parse_tracking_string
+
 
 app = Flask(__name__)
-
 app.wsgi_app = authenticate(app.wsgi_app, VEEQO_REQUEST_TOKEN)
+
+xdp = XDP()
+dx = DX(True)
+panther = Panther(True)
 
 
 @app.route("/quotes", methods=["POST"])
 def quotes():
-    quotes = build_quotes()
+    quotes = xdp.quotes() + dx.quotes() + panther.quotes()
 
     return jsonify(quotes), 201
 
 
 @app.route("/shipments", methods=["POST"])
-def create_shipment():
-    _shipment = request.json
+def create():
+    shipment = request.json
 
-    carrier, shipment = handle_shipment(_shipment)
+    details = json.loads(shipment["service_code"])
 
-    response, code = create_shipment_strategy(carrier, shipment)
+    carrier = details["carrier"]
+    service_code = details["code"]
 
-    return jsonify(response), code
+    if "xdp" in carrier:
+        return xdp.create(carrier, service_code, shipment)
+    elif carrier == "dx":
+        return dx.create(service_code, shipment)
+    elif carrier == "panther":
+        return panther.create(service_code, shipment)
+
+    raise Exception("Invalid carrier: " + carrier)
 
 
-@app.route("/shipments/<tracking_number>", methods=["DELETE"])
-def delete_shipment(tracking_number):
-    carrier = get_carrier(tracking_number)
+@app.route("/shipments/<tracking_string>", methods=["DELETE"])
+def delete(tracking_string):
+    carrier, tracking_number = parse_tracking_string(tracking_string)
 
-    response = delete_shipment_strategy(carrier, tracking_number)
+    if "xdp" in carrier:
+        return xdp.delete(tracking_number)
+    elif carrier == "dx":
+        return dx.delete(tracking_number)
+    elif carrier == "panther":
+        return panther.delete(tracking_number)
 
-    return response
+    raise Exception("Invalid carrier: " + carrier)
 
 
 @app.route("/tracking", methods=["GET"])
-def track_shipment():
-    tracking_number = request.args.get("id")
+def track():
+    tracking_string = request.args.get("id")
 
-    carrier = get_carrier(tracking_number)
+    carrier, tracking_number = parse_tracking_string(tracking_string)
 
-    url = track_shipment_strategy(carrier, tracking_number)
+    if "xdp" in carrier:
+        return xdp.track(tracking_number)
+    elif carrier == "dx":
+        return dx.track(tracking_number)
+    elif carrier == "panther":
+        return panther.track(tracking_number)
 
-    return redirect(url, code=302)
+    raise Exception("Invalid carrier: " + carrier)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=33, debug=True, threaded=True)
+    app.run(
+        host="0.0.0.0",
+        port=33,
+        debug=True,
+        threaded=True,
+    )

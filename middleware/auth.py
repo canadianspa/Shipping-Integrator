@@ -26,9 +26,18 @@ class authenticate:
             return self.app(environ, authenticated_response)
 
         else:
-            message = {"message": "Invalid Authentication token"}
-            headers = {"Content-Type": "application/json"}
+            headers = {
+                "Content-Type": "application/json",
+            }
 
-            response = Response(json.dumps(message), headers=headers, status=401)
+            message = {
+                "message": "Invalid Authentication token",
+            }
+
+            response = Response(
+                json.dumps(message),
+                headers=headers,
+                status=401,
+            )
 
             return response(environ, start_response)
