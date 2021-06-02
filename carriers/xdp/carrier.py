@@ -16,9 +16,13 @@ from .builder import build_consignment
 
 
 class XDP:
-    def __init__(self):
+    def __init__(self, testing=True):
+        self.ENV = "TEST" if testing else "LIVE"
+
         self.url = "https://xdp.sysx.co.uk/api/webservice/rest/endpoint"
         self.tracking_url = "https://www.xdp.co.uk/track.php"
+
+        print(self.ENV + ": Panther initialised")
 
     def quotes(self):
         def build_quotes_wrapper(carrier, title):
