@@ -1,4 +1,5 @@
 import json
+import requests
 
 
 def build_quote(carrier, service_code, title):
@@ -17,10 +18,14 @@ def build_quote(carrier, service_code, title):
 
 
 def parse_tracking_string(tracking_string):
-    # Get carrier using first char of TrackingNo
-    # Z  => XDP
-    # L  => DX 1man
-    # N/G  => DX 2man
+    """
+    Get carrier using first char of TrackingNo
+    :param Z  => XDP
+    :param L  => DX 1man
+    :param N/G  => DX 2man
+    """
+
+    tracking_string = requests.utils.unquote(tracking_string)
 
     if "PANTHER " in tracking_string:
         return "panther", tracking_string.replace("PANTHER ", "")

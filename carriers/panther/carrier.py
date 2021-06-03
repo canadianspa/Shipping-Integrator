@@ -72,6 +72,7 @@ class Panther:
 
             return jsonify(response), 201
         else:
+            print("ERROR: ", response)
             return "Consignment not created", 500
 
     def delete(self, consignmentno):
@@ -88,6 +89,7 @@ class Panther:
         if response.status_code == 200:
             return "Consignment deleted", 204
         else:
+            print("ERROR: ", response)
             return "Consignment not deleted", 500
 
     def track(self, consignmentno):

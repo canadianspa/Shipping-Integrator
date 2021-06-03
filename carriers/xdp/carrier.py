@@ -22,7 +22,7 @@ class XDP:
         self.url = "https://xdp.sysx.co.uk/api/webservice/rest/endpoint"
         self.tracking_url = "https://www.xdp.co.uk/track.php"
 
-        print(self.ENV + ": Panther initialised")
+        print(self.ENV + ": XDP initialised")
 
     def quotes(self):
         def build_quotes_wrapper(carrier, title):

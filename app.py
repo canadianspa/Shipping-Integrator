@@ -13,9 +13,11 @@ from carriers.utils import parse_tracking_string
 app = Flask(__name__)
 app.wsgi_app = authenticate(app.wsgi_app, VEEQO_REQUEST_TOKEN)
 
-xdp = XDP()
-dx = DX(True)
-panther = Panther(True)
+
+# Edit to change environment of certain carriers
+xdp = XDP(testing=False)
+dx = DX(testing=False)
+panther = Panther(testing=True)
 
 
 @app.route("/quotes", methods=["POST"])
