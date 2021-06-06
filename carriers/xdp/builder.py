@@ -24,28 +24,26 @@ def build_consignment(account_number, access_key, service_code, shipment):
             <manifestweight><![CDATA[{weight}]]></manifestweight>
             <manifestpieces><![CDATA[{len(pieces)}]]></manifestpieces>
             <label><![CDATA[{"yes"}]]></label>
-            <pieces>
-                {pieces}
-            </pieces>
+            <pieces>{"".join(pieces)}</pieces>
         </consignment>
     </xdpwebservice>
     """
 
 
 def build_pieces(shipment):
-    pieces = ""
+    pieces = []
     weight = 0
 
     for parcel in shipment["parcels"]:
-        piece = f"""
+        pieces.append(
+            f"""
             <piece>
                 <height><![CDATA[{parcel["dimensions"]["height"]}]]></height>
                 <width><![CDATA[{parcel["dimensions"]["width"]}]]></width>
                 <length><![CDATA[{parcel["dimensions"]["length"]}]]></length>
             </piece>
         """
-
-        pieces = pieces + piece
+        )
         weight += int(parcel["weight_in_grams"] / 1000)
 
     return pieces, weight
