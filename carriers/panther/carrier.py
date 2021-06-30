@@ -64,9 +64,9 @@ class Panther:
                     "noofitems": 1,
                     "packageqty": 1,
                     "weight": parcel["weight_in_grams"] / 1000,
-                    "height": parcel["dimensions"]["height"] / 1000,
-                    "width": parcel["dimensions"]["width"] / 1000,
-                    "length": parcel["dimensions"]["length"] / 1000,
+                    "height": parcel["dimensions"]["height"] / 100,
+                    "width": parcel["dimensions"]["width"] / 100,
+                    "depth": parcel["dimensions"]["length"] / 100,
                     "cube": (parcel["dimensions"]["height"] / 100)
                     * (parcel["dimensions"]["width"] / 100)
                     * (parcel["dimensions"]["length"] / 100),
