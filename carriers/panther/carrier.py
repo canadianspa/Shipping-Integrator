@@ -24,7 +24,6 @@ class Panther:
 
     def quotes(self):
         return [
-            build_quote("panther", 1, "Panther - 1man Delivery (2 days)"),
             build_quote("panther", 2, "Panther - 2man Delivery (2 days)"),
             build_quote("panther", 3, "Panther - 3man Delivery (2 days)"),
         ]
@@ -44,16 +43,33 @@ class Panther:
             "deliveryemail": shipment["destination_address"]["email"],
             "deliverydate": deliverydate.strftime("%d/%m/%Y"),
             "servicetype": service_type,
+            "iscollection": 0,
+            "eu_ReceiverEORI": "n/a",
+            "eu_IncoTerms": "n/a",
+            "eu_Currency": shipment["currency_code"],
+            "eu_ShipmentMode": "Road",
+            "eu_ItemsDescription": "Hot Tubs",
+            "eu_HSCode": "9019101000",
+            "eu_ExportReason": "Domestic purchase",
+            "eu_Unit": "Carton",
+            "eu_TotalPrice": shipment["total_price"],
+            "eu_ExtraCharges": "n/a",
+            "eu_Certifications": "n/a",
+            "eu_OriginCountry": "UK",
             "lines": [
                 {
-                    "suppliername": "canadianspa",
-                    "productcode": "Canadian Spa Company",
-                    "productdescription": "N/a",
+                    "suppliername": "Canadian Spa Company Ltd",
+                    "productcode": "N/a",
+                    "productdescription": "Hot tubs/Hot tub goods",
                     "noofitems": 1,
+                    "packageqty": 1,
                     "weight": parcel["weight_in_grams"] / 1000,
-                    "height": parcel["dimensions"]["height"],
-                    "width": parcel["dimensions"]["width"],
-                    "depth": parcel["dimensions"]["length"],
+                    "height": parcel["dimensions"]["height"] / 100,
+                    "width": parcel["dimensions"]["width"] / 100,
+                    "depth": parcel["dimensions"]["length"] / 100,
+                    "cube": (parcel["dimensions"]["height"] / 100)
+                    * (parcel["dimensions"]["width"] / 100)
+                    * (parcel["dimensions"]["length"] / 100),
                 }
                 for parcel in shipment["parcels"]
             ],

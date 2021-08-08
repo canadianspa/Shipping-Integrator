@@ -49,6 +49,7 @@ class XDP:
             service_code,
             shipment,
         )
+        print(data)
 
         response = requests.post(self.url, data=data)
 
