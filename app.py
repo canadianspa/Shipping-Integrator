@@ -17,7 +17,7 @@ app.wsgi_app = authenticate(app.wsgi_app, VEEQO_REQUEST_TOKEN)
 # Edit to change environment of certain carriers
 xdp = XDP(testing=False)
 dx = DX(testing=False)
-panther = Panther(testing=True)
+panther = Panther(testing=False)
 
 
 @app.route("/quotes", methods=["POST"])
